@@ -570,18 +570,19 @@ Module['Pointer_stringify'] = Pointer_stringify;
 
 // Given a pointer 'ptr' to a null-terminated UTF16LE-encoded string in the emscripten HEAP, returns
 // a copy of that string as a Javascript String object.
-function UTF16ToString(ptr) {
+function UTF16ToString(ptr, /* optional */ length) {
   var i = 0;
 
   var str = '';
   while (1) {
     var codeUnit = {{{ makeGetValue('ptr', 'i*2', 'i16') }}};
-    if (codeUnit == 0)
-      return str;
-    ++i;
+    if (codeUnit == 0 && !length) break;
     // fromCharCode constructs a character from a UTF-16 code unit, so we can pass the UTF16 string right through.
     str += String.fromCharCode(codeUnit);
+    ++i;
+    if (length && i == length) break;
   }
+  return str;
 }
 Module['UTF16ToString'] = UTF16ToString;
 
