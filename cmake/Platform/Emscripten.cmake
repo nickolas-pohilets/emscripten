@@ -14,8 +14,9 @@
 # The following variable describes the target OS we are building to.
 # Ideally, this could be 'Emscripten', but as Emscripten mimics the Linux platform, setting this to Linux will allow more of existing software to build.
 # Be sure to run Emscripten test_openjpeg if planning to change this.
-set(CMAKE_SYSTEM_NAME Linux)
-set(CMAKE_SYSTEM_VERSION 1)
+set(CMAKE_SYSTEM_NAME Darwin)
+set(CMAKE_SYSTEM_VERSION 12.5.0)
+set(CMAKE_SYSTEM_PROCESSOR x86)
 
 set(CMAKE_CROSSCOMPILING TRUE)
 
@@ -65,11 +66,11 @@ if ("${CMAKE_CXX_COMPILER}" STREQUAL "")
 endif()
 
 if ("${CMAKE_AR}" STREQUAL "")
-	set(CMAKE_AR "${EMSCRIPTEN_ROOT_PATH}/emar${EMCC_SUFFIX}")
+	set(CMAKE_AR "${EMSCRIPTEN_ROOT_PATH}/emar${EMCC_SUFFIX}" CACHE FILEPATH "Archiver")
 endif()
 
 if ("${CMAKE_RANLIB}" STREQUAL "")
-	set(CMAKE_RANLIB "${EMSCRIPTEN_ROOT_PATH}/emranlib${EMCC_SUFFIX}")
+	set(CMAKE_RANLIB "${EMSCRIPTEN_ROOT_PATH}/emranlib${EMCC_SUFFIX}" CACHE FILEPATH "Archive Editor")
 endif()
 
 # Don't do compiler autodetection, since we are cross-compiling.
@@ -78,7 +79,7 @@ CMAKE_FORCE_C_COMPILER("${CMAKE_C_COMPILER}" Clang)
 CMAKE_FORCE_CXX_COMPILER("${CMAKE_CXX_COMPILER}" Clang)
 
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
-set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
+set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE BOTH)
 set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 
@@ -146,6 +147,9 @@ set(link_js_counter 1)
 # Internal function: Do not call from user CMakeLists.txt files. Use one of em_link_js_library()/em_link_pre_js()/em_link_post_js() instead.
 function(em_add_tracked_link_flag target flagname)
 	get_target_property(props ${target} LINK_FLAGS)
+	if((props STREQUAL "NOTFOUND") OR (props STREQUAL "props-NOTFOUND"))
+		set(props "")
+	endif()
 	# User can input list of JS files either as a single list, or as variable arguments to this function, so iterate over varargs, and treat each
 	# item in varargs as a list itself, to support both syntax forms.
 	foreach(jsFileList ${ARGN})
