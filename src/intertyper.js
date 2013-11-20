@@ -3,6 +3,8 @@
 // LLVM assembly => internal intermediate representation, which is ready
 // to be processed by the later stages.
 
+//@ sourceURL=intertyper.js
+
 var fastPaths = 0, slowPaths = 0;
 
 // Line tokenizer

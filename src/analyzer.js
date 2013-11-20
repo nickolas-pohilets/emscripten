@@ -4,6 +4,8 @@
 // to do the final conversion into JavaScript later, for example,
 // properties of variables, loop structures of functions, etc.
 
+//@ sourceURL=analyzer.js
+
 var VAR_NATIVE = 'native';
 var VAR_NATIVIZED = 'nativized';
 var VAR_EMULATED = 'emulated';

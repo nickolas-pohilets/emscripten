@@ -5,6 +5,8 @@
 
 // Handy sets
 
+//@ sourceURL=jsifier.js
+
 var STRUCT_LIST = set('struct', 'list');
 var UNDERSCORE_OPENPARENS = set('_', '(');
 var RELOOP_IGNORED_LASTS = set('return', 'unreachable', 'resume');
